@@ -44,7 +44,6 @@ const Register = () => {
               id: 1,
             };
             const userChatsRef = doc(db, "usersChats", res.user.uid);
-            console.log("Document Path:", userChatsRef.path);
             await setDoc(userChatsRef, message1);
             const message = {
               uid: res.user.uid,

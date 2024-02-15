@@ -29,15 +29,13 @@ const Chats = () => {
   }, [currentUser]);
 
   const handleSelect = (u) => {
-    console.log("u", u);
     dispatch({ type: "CHANGE_USER", payload: u });
   };
-  console.log("chats", JSON.stringify(chats, null, 2));
   return (
     <div className="chats">
       {Object.keys(chats).map((key) => {
         const user = chats[key];
-
+        const lastMessage = user?.lastMessage?.text || "No messages yet";
         if (
           user.userInfo &&
           user.userInfo.displayName &&
@@ -49,12 +47,12 @@ const Chats = () => {
             <div
               className="userChat"
               key={key}
-              onClick={() => handleSelect(user.userInfo.uid)}
+              onClick={() => handleSelect(user.userInfo)}
             >
               <img src={photoURL} alt={`${displayName}'s Photo`} />
               <div className="userChatInfo">
                 <span>{displayName}</span>
-                {/* <p>{chat[1].lastMessage?.text}</p> */}
+                <p>{lastMessage}</p> {/* Display the last message */}
               </div>
             </div>
           );

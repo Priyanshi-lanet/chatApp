@@ -8,7 +8,7 @@ const Messages = () => {
   const { data } = useContext(ChatContext);
   const db = getFirestore();
   useEffect(() => {
-    const unSub = onSnapshot(doc(db, "chats", data.chatId), (doc) => {
+    const unSub = onSnapshot(doc(db, `chats/${data.chatId}`), (doc) => {
       doc.exists() && setMessages(doc.data().messages);
     });
 
@@ -16,7 +16,6 @@ const Messages = () => {
       unSub();
     };
   }, [data.chatId]);
-
   return (
     <div className="messages">
       {messages.map((m) => (

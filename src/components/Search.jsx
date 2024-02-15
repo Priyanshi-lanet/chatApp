@@ -92,14 +92,16 @@ const Search = () => {
         [`${combinedId}.date`]: serverTimestamp(),
       };
 
-      //option2
+      //updatett
       const userChatsRef = doc(db, `usersChats/${currentUser.uid}`);
+      await updateDoc(userChatsRef, updateData);
+
       const selectChatsRef1 = doc(db, `usersChats/${s_user.id}`);
+      await updateDoc(selectChatsRef1, updateData);
       const index = list.findIndex(
         (userChat) => userChat.uid === currentUser.uid
       );
-      await updateDoc(userChatsRef, updateData);
-      await updateDoc(selectChatsRef1, updateData);
+
       if (index !== -1) {
         list[index].uid = currentUser.uid;
 

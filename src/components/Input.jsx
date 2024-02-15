@@ -6,21 +6,21 @@ import { ChatContext } from "../context/ChatContext";
 import {
   arrayUnion,
   doc,
+  getFirestore,
   serverTimestamp,
   Timestamp,
   updateDoc,
 } from "firebase/firestore";
-import { db, storage } from "../firebase";
+import { storage } from "../firebase";
 import { v4 as uuid } from "uuid";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 const Input = () => {
   const [text, setText] = useState("");
   const [img, setImg] = useState(null);
-
+  const db = getFirestore();
   const { currentUser } = useContext(AuthContext);
   const { data } = useContext(ChatContext);
-  console.log("data", data);
 
   const handleSend = async () => {
     if (img) {
@@ -47,7 +47,8 @@ const Input = () => {
         }
       );
     } else {
-      await updateDoc(doc(db, "chats", data.chatId), {
+      const ChatsRef = doc(db, `chats/${data.chatId}`);
+      await updateDoc(ChatsRef, {
         messages: arrayUnion({
           id: uuid(),
           text,
@@ -57,14 +58,15 @@ const Input = () => {
       });
     }
 
-    await updateDoc(doc(db, "userChats", currentUser.uid), {
+    const userChatsRef = doc(db, `usersChats/${currentUser.uid}`);
+    await updateDoc(userChatsRef, {
       [data.chatId + ".lastMessage"]: {
         text,
       },
       [data.chatId + ".date"]: serverTimestamp(),
     });
-
-    await updateDoc(doc(db, "userChats", data.user.uid), {
+    const userrChatsRef = doc(db, `usersChats/${data.user.uid}`);
+    await updateDoc(userrChatsRef, {
       [data.chatId + ".lastMessage"]: {
         text,
       },
