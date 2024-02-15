@@ -20,6 +20,7 @@ const Input = () => {
 
   const { currentUser } = useContext(AuthContext);
   const { data } = useContext(ChatContext);
+  console.log("data", data);
 
   const handleSend = async () => {
     if (img) {

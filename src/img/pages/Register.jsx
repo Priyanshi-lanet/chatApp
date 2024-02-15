@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Add from "../add.png";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-
+import { doc, getFirestore, setDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useNavigate, Link } from "react-router-dom";
 import { set } from "firebase/database";
@@ -19,70 +19,59 @@ const Register = () => {
     const email = e.target[1].value;
     const password = e.target[2].value;
     const file = e.target[3].files[0];
-    function createDatabasesForUser(userId) {
-      console.log("userId", userId);
-      // Access Firestore instance
-      // const firestore = firebase.firestore();
 
-      // Create user document in 'users' collection using userId
-      const userRef = getFStore.collection("users").doc(userId);
-      userRef
-        .set({
-          data: 1,
-        })
-        .then(() => {
-          console.log("Document successfully written!");
-        })
-        .catch((error) => {
-          console.error("Error writing document:", error);
-        });
-
-      // Create userChats document in 'userChats' collection using userId
-      // const userChatsRef = db.collection("userChats").doc(userId);
-      // userChatsRef.set({
-      //   /* Initial userChats data */
-      // });
-    }
     try {
-      //Create user
+      // Create user
       const res = await createUserWithEmailAndPassword(auth, email, password);
-      createDatabasesForUser(res.user.uid);
-      //Create a unique image name
       const date = new Date().getTime();
       const storageRef = ref(storage, `${displayName + date}`);
+      // Access Firestore instance
+
+      // Create databases for user
 
       await uploadBytesResumable(storageRef, file).then(() => {
-        console.log("1", storageRef, file);
         getDownloadURL(storageRef).then(async (downloadURL) => {
           try {
-            console.log("sucess");
             //Update profile
-            await updateProfile(res.user, {
-              displayName,
-              photoURL: downloadURL,
-            });
-            //create user on firestore
-            await set(ref(db, `users`, res.user.uid), {
+            const db = getFirestore();
+            // await updateProfile(res.user, {
+            //   displayName,
+            //   photoURL: downloadURL,
+            // });
+            const userRef = doc(db, "users", res.user.uid);
+            const message1 = {
+              uid: res.user.uid,
+              id: 1,
+            };
+            const userChatsRef = doc(db, "usersChats", res.user.uid);
+            console.log("Document Path:", userChatsRef.path);
+            await setDoc(userChatsRef, message1);
+            const message = {
               uid: res.user.uid,
               displayName,
               email,
               photoURL: downloadURL,
-            });
+            };
+            await setDoc(userRef, message);
+
+            // const userChatsRef = collection(db, "userChats").doc(res.user.uid);
+            // await setDoc(userRef, message);
+            // await setDoc(userChatsRef, {});
+            //create user on firestore
 
             //create empty user chats on firestore
-            await set(ref(db, "userChats", res.user.uid), {});
+
             navigate("/");
           } catch (err) {
-            console.log("err", err);
-            console.log("falilses");
             console.log(err);
             setErr(true);
             setLoading(false);
           }
         });
       });
+      // Your other code goes here
     } catch (err) {
-      console.log("errww", err);
+      console.log("Error:", err);
       setErr(true);
       setLoading(false);
     }
