@@ -5,24 +5,18 @@ import { ChatContext } from "../context/ChatContext";
 
 const Chats = () => {
   const [chats, setChats] = useState([]);
-
   const { currentUser } = useContext(AuthContext);
   const { dispatch } = useContext(ChatContext);
   const db = getFirestore();
-  console.log("CCC", currentUser.uid);
   useEffect(() => {
     const getChats = async () => {
       try {
-        const docRef = doc(db, "userChats", currentUser.uid);
-        console.log("hereeeeee", docRef);
-        const snapshot = await getDoc(docRef);
-        console.log("1233232123132", snapshot);
+        const userChatsRef = doc(db, `usersChats/${currentUser.uid}`);
+        const snapshot = await getDoc(userChatsRef);
+
         if (snapshot.exists()) {
-          console.log("hereeeeee");
-          console.log("Document data:", snapshot.data());
           setChats(snapshot.data());
         } else {
-          // console.log("Document does not exist");
         }
       } catch (error) {
         console.error("Error fetching document:", error);
@@ -36,27 +30,39 @@ const Chats = () => {
 
   const handleSelect = (u) => {
     console.log("u", u);
-    // dispatch({ type: "CHANGE_USER", payload: u });
+    dispatch({ type: "CHANGE_USER", payload: u });
   };
-  console.log("chats", JSON.stringify(chats.userInfo, null, 2));
+  console.log("chats", JSON.stringify(chats, null, 2));
   return (
-    <>
-      {chats.userInfo && (
-        <div className="chats">
-          <div
-            className="userChat"
-            key={chats}
-            onClick={() => handleSelect(chats.userInfo)}
-          >
-            <img src={chats.userInfo.photoURL} alt="" />
-            <div className="userChatInfo">
-              <span>{chats.userInfo.displayName}</span>
-              <p>{chats.lastMessage?.text}</p>
+    <div className="chats">
+      {Object.keys(chats).map((key) => {
+        const user = chats[key];
+
+        if (
+          user.userInfo &&
+          user.userInfo.displayName &&
+          user.userInfo.photoURL
+        ) {
+          const { displayName, photoURL } = user.userInfo;
+
+          return (
+            <div
+              className="userChat"
+              key={key}
+              onClick={() => handleSelect(user.userInfo.uid)}
+            >
+              <img src={photoURL} alt={`${displayName}'s Photo`} />
+              <div className="userChatInfo">
+                <span>{displayName}</span>
+                {/* <p>{chat[1].lastMessage?.text}</p> */}
+              </div>
             </div>
-          </div>
-        </div>
-      )}
-    </>
+          );
+        } else {
+          return null; // Skip rendering if userInfo or required fields are missing
+        }
+      })}
+    </div>
   );
 };
 

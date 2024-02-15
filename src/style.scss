@@ -106,6 +106,8 @@
 
     .sidebar {
       flex: 1;
+      overflow: scroll;
+
       background-color: #3e3c61;
       position: relative;
 

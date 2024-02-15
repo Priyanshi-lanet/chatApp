@@ -62,14 +62,6 @@ const Search = () => {
         const usersSnapshot1 = await getDocs(bookCollectionRef1);
         const usersData = usersSnapshot.docs.map((doc) => doc.data());
         setlist(usersData);
-        console.log(
-          "inistklau",
-          JSON.stringify(
-            usersSnapshot1.docs.map((doc) => doc.data()),
-            null,
-            2
-          )
-        );
         setUser(usersData);
       } catch (error) {
         console.error("Error updating document:", error);
@@ -130,7 +122,6 @@ const Search = () => {
         <input
           type="text"
           placeholder="Find a user"
-          // onKeyDown={handleKey}
           onChange={(e) => setUsername(e.target.value)}
           value={username}
         />
