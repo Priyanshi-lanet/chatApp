@@ -42,29 +42,9 @@ const Input = () => {
     }
   };
 
-  // const handleSend = async () => {
-  //   if (img) {
-  //     try {
-  //       const imageUrl = await getUrlFromFirebase(img);
-  //       console.log("downloadUrl", imageUrl);
-  //       // Now you have the imageUrl, you can proceed with your logic here
-  //       // createUser(values.email, values.password, values.name, imageUrl);
-  //       // history("/all-meetup");
-  //     } catch (error) {
-  //       // Handle error if getUrlFromFirebase fails
-  //       console.error("Error uploading image:", error);
-  //     }
-  //   }
-  // };
   const handleSend = async () => {
     if (img) {
       const imageUrl = await getUrlFromFirebase(img);
-      console.log("downloadUrl", imageUrl);
-      // const storageRef = ref(storage, uuid());
-      // const uploadTask = uploadBytesResumable(storageRef, img);
-      // getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-      //   console.log("downlaodUrl", downloadURL);
-
       const ChatsRef = doc(db, `chats/${data.chatId}`);
       await updateDoc(ChatsRef, {
         messages: arrayUnion({
@@ -75,25 +55,6 @@ const Input = () => {
           img: imageUrl,
         }),
       });
-      // await updateDoc(doc(db, "chats", data.chatId), {
-      //   messages: arrayUnion({
-      //     id: uuid(),
-      //     text,
-      //     senderId: currentUser.uid,
-      //     date: Timestamp.now(),
-      //     img: imageUrl,
-      //   }),
-      // });
-
-      // uploadTask.on(
-      //   (error) => {
-      //     console.log("err", error);
-      //     //TODO:Handle Error
-      //   },
-      //   () => {
-
-      //   }
-      // );
     } else {
       const ChatsRef = doc(db, `chats/${data.chatId}`);
       await updateDoc(ChatsRef, {
