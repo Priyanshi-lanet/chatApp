@@ -19,39 +19,9 @@ const Search = () => {
   const db = getFirestore();
   const [username, setUsername] = useState("");
   const [user, setUser] = useState(null);
-  const [fuser, setfUser] = useState(null);
   const [err, setErr] = useState(false);
   const [list, setlist] = useState([]);
   const { currentUser } = useContext(AuthContext);
-
-  // const handleSearch = async () => {
-  //   const usersCollectionRef = doc(db, "users");
-  //   console.log("usersCollectionRef", usersCollectionRef);
-  //   // const cityRef = db.collection("users").doc(currentUser.uid);
-  //   // const doc = await cityRef.get();
-  //   // if (!doc.exists) {
-  //   //   console.log("No such document!");
-  //   // } else {
-  //   //   console.log("Document data:", doc.data());
-  //   // }
-
-  //   // const querySnapshot = await getDocs(q);
-  //   // querySnapshot.forEach((doc) => {
-  //   //   console.log("-====================");
-  //   //   console.log(doc.id, " => ", doc.data());
-  //   //   console.log("-====================");
-  //   // });
-
-  //   // try {
-  //   //   const querySnapshot = await getDocs(q);
-  //   //   querySnapshot.forEach((doc) => {
-  //   //     console.log("inside search", doc.data());
-  //   //     setUser(doc.data());
-  //   //   });
-  //   // } catch (err) {
-  //   //   setErr(true);
-  //   // }
-  // };
   const bookCollectionRef = collection(db, "users");
   const bookCollectionRef1 = collection(db, "usersChats");
 

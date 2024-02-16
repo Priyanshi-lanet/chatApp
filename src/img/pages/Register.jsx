@@ -32,12 +32,8 @@ const Register = () => {
       await uploadBytesResumable(storageRef, file).then(() => {
         getDownloadURL(storageRef).then(async (downloadURL) => {
           try {
-            //Update profile
             const db = getFirestore();
-            // await updateProfile(res.user, {
-            //   displayName,
-            //   photoURL: downloadURL,
-            // });
+
             const userRef = doc(db, "users", res.user.uid);
             const message1 = {
               uid: res.user.uid,
@@ -52,13 +48,6 @@ const Register = () => {
               photoURL: downloadURL,
             };
             await setDoc(userRef, message);
-
-            // const userChatsRef = collection(db, "userChats").doc(res.user.uid);
-            // await setDoc(userRef, message);
-            // await setDoc(userChatsRef, {});
-            //create user on firestore
-
-            //create empty user chats on firestore
 
             navigate("/");
           } catch (err) {
